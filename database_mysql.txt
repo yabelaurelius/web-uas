@@ -1,0 +1,97 @@
+CREATE TABLE IF NOT EXISTS `author` (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`first_name` VARCHAR(64) NOT NULL,
+	`last_name` VARCHAR(64),
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`deleted_at` TIMESTAMP NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `book` (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(128) NOT NULL,
+    `author_id` INTEGER UNSIGNED NOT NULL,
+	`price` DECIMAL(10,2) NOT NULL,
+	`quantity` BIGINT NOT NULL DEFAULT 0,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`deleted_at` TIMESTAMP NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+	FOREIGN KEY (`author_id`) REFERENCES `author`(`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `member` (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`username` VARCHAR(64) NOT NULL,
+	`password` VARCHAR(128) NOT NULL,
+	`first_name` VARCHAR(128) NOT NULL,
+	`last_name` VARCHAR(128) NOT NULL,
+	`date_of_birth` TIMESTAMP,
+	`email` VARCHAR(128),
+	`address` VARCHAR(255),
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`deleted_at` TIMESTAMP NULL DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE (`username`)
+);
+
+CREATE TABLE IF NOT EXISTS `transaction` (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`member_id` INTEGER UNSIGNED NOT NULL,
+	`is_paid` BOOLEAN NOT NULL DEFAULT FALSE,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`deleted_at` TIMESTAMP NULL DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`member_id`) REFERENCES `member`(`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `transaction_item` (
+	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`transaction_id` INTEGER UNSIGNED NOT NULL,
+	`book_id` INTEGER UNSIGNED NOT NULL,
+	`rating` TINYINT UNSIGNED,
+	`quantity` TINYINT UNSIGNED NOT NULL,
+	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`transaction_id`) REFERENCES `transaction`(`id`),
+	FOREIGN KEY (`book_id`) REFERENCES `book`(`id`)
+);
+
+INSERT INTO `author`(`first_name`, `last_name`)
+VALUES
+('J.K.', 'Rowling'),
+('Agatha', 'Cristie'),
+('Ernest', 'Hemingway'),
+('Jane', 'Austen'),
+('Sarah J.', 'Maas');
+
+INSERT INTO `book`(`title`, `author_id`, `price`, `quantity`)
+VALUES
+('Harry Potter and the Philosopher Stone', 1, 170000, 18),
+('Harry Potter and the Chamber of Secrets', 1, 165000, 20),
+('Harry Potter and the Prisoner of Azkaban', 1, 180000, 9),
+('Harry Potter and the Goblet of Fire', 1, 210000, 12),
+('Harry Potter and the Order of the Phoenix', 1, 175000, 11),
+('Harry Potter and the Half-Blood Prince', 1, 222000, 4),
+('Harry Potter and the Deathly Hallows', 1, 329000, 3),
+('Hercule Poirot', 2, 400000, 10),
+('Miss Marple', 2, 350000, 5),
+('The Sun Also Rises', 3, 273000, 3),
+('A Farewell to Arms', 3, 179000, 5),
+('For Whom the Bell Tolls', 3, 212000, 2),
+('The Old Man and the Sea', 3, 399000, 9),
+('Sense and Sensibility', 4, 181000, 4),
+('Pride and Prejudice', 4, 183000, 2),
+('Mansfield Park', 4, 184000, 3),
+('Emma', 4, 185000, 5),
+('The Assassin Blade', 5, 229000, 11),
+('Throne of Glass', 5, 249000, 4),
+('Crown of Midnight', 5, 279000, 7),
+('Heir of Fire', 5, 299000, 3),
+('Queen of Shadows', 5, 329000, 8),
+('Empire of Storms', 5, 419000, 4),
+('Tower of Dawn', 5, 619000, 13);
